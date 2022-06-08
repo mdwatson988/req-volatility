@@ -4,6 +4,7 @@ const router = express.Router();
 const featuresRouter = require('./featuresRouter')
 const db = require('../db')
 const { OAuth2Client } = require('google-auth-library');
+const dotenv = require('dotenv');
 
 // HELPER FUNCTIONS
 // function upsert(array, item) {
@@ -19,8 +20,9 @@ router.use('/features', featuresRouter, (req, res, next) => {
 
 router.post('/google-login', async (req, res, next) => {
     //should include email as part of req.body if we want to store this in database
-    const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
-    const users = [];
+    dotenv.config();
+    const client = new OAuth2Client(process.env.VOLATRACK_GOOGLE_CLIENT_ID);
+    // const users = [];
     const { token } = req.body;
     const ticket = await client.verifyIdToken({
         idToken: token,
@@ -40,7 +42,7 @@ router.post('/google-login', async (req, res, next) => {
     } else {
         const createUserQuery = 'INSERT INTO users (email) VALUES ($1)'
         await db.query(createUserQuery, [email])
-        return res.status(200).json(res.locals)
+        return res.status(200).json(res.locals.loginData)
     }
 })
 
