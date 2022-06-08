@@ -1,24 +1,30 @@
 import React, { createContext, useState } from 'react';
-import {BrowserRouter, Routes, Route, Link} from 'react-router-dom';
+import {BrowserRouter, Routes, Route, Navigate, useParams} from 'react-router-dom';
 import Login from './pages/login.jsx';
+import Features from './pages/features.jsx';
 
-const UserContext = createContext();
+const UserEmailContext = createContext();
 
 const App = () => {
-  const [user, setUser] = useState(undefined);
+  const [userEmail, setUserEmail] = useState(undefined);
 
   return(
-    <UserContext.Provider value={ {user, setUser} }>
+    <UserEmailContext.Provider value={ {userEmail, setUserEmail} }>
+      {/* <Features></Features> */}
       <BrowserRouter>
-      <Login />
-        {/* <Routes>
-          <Route path='/' element={<Login />} />
-          <Route path='/Login' element={<Login />} />
-        </Routes> */}
+        <div className='App'>
+          <Routes>
+            <Route path='/' element={<Login />}></Route>
+            <Route path='/login' element={<Login />}></Route>
+            <Route path='/features' element={<Features />}></Route>
+            <Route path='/features/:email' element={<Features />}></Route>
+            <Route path='/*' element={<Navigate to='/' replace />}></Route>
+          </Routes>
+        </div>
       </BrowserRouter>
-    </UserContext.Provider>
+    </UserEmailContext.Provider>
   );
 };
 
 export default App;
-export { UserContext };
+export { UserEmailContext };
